@@ -20,6 +20,14 @@ public static void send(Request request) {
         telegram.setProxyParams(Proxy.Type.SOCKS, "orbtl.s5.opennetwork.cc", 999, "369389927", "ElzXFZlC");
 ```
 
+На данный момент все запросы фильтруются по ключевому слову `api` :
+
+```java
+if (request.url().toString().contains("api"))
+```
+
+Систему фильтрации доработаю потом, а также буферизацию запросов к телеграм-боту. 
+
 Для инжекции перехватчика необходимо:
 
 1. Скачать [BatchApkTool](http://bursoft-portable.blogspot.com/2018/10/batch-apktool-376-donate.html) . Эта утилита позволит вам декомпилировать apk файлы. 
@@ -84,7 +92,7 @@ public static void send(Request request) {
 
 14. Изменить реализацию метода на такую:
 
-    ```
+    ```smali
     .method public newCall(Lokhttp3/Request;)Lokhttp3/Call;
         .locals 1
     
@@ -102,7 +110,7 @@ public static void send(Request request) {
 
     То есть просто нужно добавить строку:
 
-    ```
+    ```smali
     invoke-static {p1}, Lcom/heavy87/InterceptMe/InterceptMe;->send(Lokhttp3/Request;)V
     ```
 
