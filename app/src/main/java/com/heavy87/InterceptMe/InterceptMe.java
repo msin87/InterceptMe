@@ -208,8 +208,6 @@ public final class InterceptMe {
                             return;
                         RequestBody_writeTo.invoke(request.body(), buffer);
                         String requestString = (String) Buffer_readString.invoke(buffer, Charset.defaultCharset());
-                        //enter your telegram bot chatId
-
                         telegram.sendMessageToChat("<b>" + request.method() + "</b>\n<code>" + request.url() + "</code>\n<u>body:</u>\n<code>" + requestString + "</code>", chatId);
                         break;
                     default:
