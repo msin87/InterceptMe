@@ -195,7 +195,7 @@ public final class InterceptMe {
             if (request.url().toString().contains("api")) {
                 switch (request.method()) {
                     case "GET":
-                        telegram.sendMessageToChat("<b>" + request.method() + "</b>\n" + "<code>" + request.url() + "</code>", -301798988);
+                        telegram.sendMessageToChat("<b>" + request.method() + "</b>\n" + "<code>" + request.url() + "</code>", chatId);
                         break;
                     case "POST":
                         Class<?> R_Buffer = getClassFromParamClass(Http2Connection.class, "writeData", 4, 2);
