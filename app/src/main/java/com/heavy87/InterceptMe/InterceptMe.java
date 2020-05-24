@@ -15,6 +15,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -132,70 +133,23 @@ final class Telegram extends NetworkTask {
     }
 }
 
-public final class InterceptMe {
-    static Class<?> getClassFromParamClass(Class<?> TargetClass, String methodName, int countParams, int paramIndex) {
-        Method[] methods = TargetClass.getMethods();
-        Class<?> FoundClass;
-        for (Method m : methods) {
-            if (!m.getName().equals(methodName)) {
-                continue;
-            }
-            Class<?>[] pType = m.getParameterTypes();
-            if (pType.length == countParams) {
-                try {
-                    FoundClass = Class.forName(pType[paramIndex].getName());
-                    return FoundClass;
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
+public final class InterceptMe extends Deobfuscator{
 
-    static Method getMethodFromClass(Class<?> TargetClass, String name, int countParams) {
-        Method[] methods = TargetClass.getMethods();
-        for (Method m : methods) {
-            if (m.getName().equals(name) && (m.getParameterTypes().length == countParams))
-                return m;
-        }
-        return null;
-    }
 
-    static Method getMethodByParamsClass(Class<?> TargetClass, Class<?>... parameterTypes) {
-        Method[] methods = TargetClass.getMethods();
-        Method foundMethod = null;
-        int matchCount = 0;
-        for (Method m : methods) {
-            for (Class<?> pType : m.getParameterTypes()) {
-                if (pType.getName().equals(parameterTypes[matchCount].getName())) {
-                    matchCount++;
-                    foundMethod = m;
-                }
-            }
-            if (matchCount == parameterTypes.length) {
-                return foundMethod;
-            }
-        }
-        return null;
-    }
-
-    public static void send(Request request) {
+    static public void send(Request request) {
         try {
             //!!!Please modify this vars!!!
-            int chatId = 0;
             //enter your telegram bot key
-            String botKey = null;
-            if (chatId==0 || botKey==null)
+            if (Settings.chatId==0 || Settings.botKey==null)
                 return;
-            Telegram telegram = new Telegram(botKey);
-            //24.05.2020 this proxy is ok
-            telegram.setProxyParams(Proxy.Type.SOCKS, "orbtl.s5.opennetwork.cc", 999, "369389927", "ElzXFZlC");
+            Telegram telegram = new Telegram(Settings.botKey);
+            if (Settings.proxyHost!=null){
+                telegram.setProxyParams(Settings.proxyType, Settings.proxyHost, Settings.proxyPort, Settings.proxyLogin, Settings.proxyPassword);
+            }
             if (request.url().toString().contains("api")) {
                 switch (request.method()) {
                     case "GET":
-                        telegram.sendMessageToChat("<b>" + request.method() + "</b>\n" + "<code>" + request.url() + "</code>", chatId);
+                        telegram.sendMessageToChat("<b>" + request.method() + "</b>\n" + "<code>" + request.url() + "</code>", Settings.chatId);
                         break;
                     case "POST":
                         Class<?> R_Buffer = getClassFromParamClass(Http2Connection.class, "writeData", 4, 2);
@@ -208,7 +162,7 @@ public final class InterceptMe {
                             return;
                         RequestBody_writeTo.invoke(request.body(), buffer);
                         String requestString = (String) Buffer_readString.invoke(buffer, Charset.defaultCharset());
-                        telegram.sendMessageToChat("<b>" + request.method() + "</b>\n<code>" + request.url() + "</code>\n<u>body:</u>\n<code>" + requestString + "</code>", chatId);
+                        telegram.sendMessageToChat("<b>" + request.method() + "</b>\n<code>" + request.url() + "</code>\n<u>body:</u>\n<code>" + requestString + "</code>", Settings.chatId);
                         break;
                     default:
                         return;
