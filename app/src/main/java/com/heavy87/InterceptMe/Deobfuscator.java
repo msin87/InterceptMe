@@ -2,6 +2,8 @@ package com.heavy87.InterceptMe;
 
 import java.lang.reflect.Method;
 
+import okhttp3.RequestBody;
+
 class Deobfuscator {
     static Class<?> getClassFromParamClass(Class<?> TargetClass, String methodName, int countParams, int paramIndex) {
         Method[] methods = TargetClass.getMethods();
@@ -33,6 +35,7 @@ class Deobfuscator {
         return null;
     }
 
+
     static Method getMethodByParamsClass(Class<?> TargetClass, Class<?>... parameterTypes) {
         Method[] methods = TargetClass.getMethods();
         Method foundMethod = null;
@@ -43,9 +46,9 @@ class Deobfuscator {
                     matchCount++;
                     foundMethod = m;
                 }
-            }
-            if (matchCount == parameterTypes.length) {
-                return foundMethod;
+                if (matchCount == parameterTypes.length) {
+                    return foundMethod;
+                }
             }
         }
         return null;

